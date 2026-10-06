@@ -41,7 +41,7 @@ def main():
     write_ordered_calls(os.path.join(_RESOURCES_DIR, 'orderedCalls.csv'))
 
     # Helper method that prints the contents of the users and callLogs tables. Uncomment to see data.
-    select_from_users_and_call_logs()
+    # select_from_users_and_call_logs()
 
     # Close the cursor and connection. main function ends here.
     cursor.close()
@@ -117,8 +117,18 @@ def write_user_analytics(csv_file_path):
 # This function will write the callLogs ordered by userId, then start time.
 # Then, write the ordered callLogs to orderedCalls.csv
 def write_ordered_calls(csv_file_path):
+    cursor.execute('''
+    SELECT *
+    FROM callLogs
+    ORDER BY userId, startTime
+    ''')
 
-    print("TODO: write_ordered_calls")
+    with open(csv_file_path, 'w') as calls_file:
+        calls_file.write('callId,phoneNumber,startTime,endTime,direction,userId\n')
+
+        for log in cursor.fetchall():
+            formatted_log = ','.join(map(str, log))
+            calls_file.write(f'{formatted_log}\n')
 
 
 
